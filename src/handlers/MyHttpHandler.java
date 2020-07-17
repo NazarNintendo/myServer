@@ -1,10 +1,8 @@
-package server;
+package handlers;
 
 import com.sun.net.httpserver.Headers;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
-import jdk.nashorn.internal.runtime.JSONFunctions;
-import jdk.nashorn.internal.runtime.JSONListAdapter;
 import utils.ColorPrintable;
 
 import java.io.IOException;
