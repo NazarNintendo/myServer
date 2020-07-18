@@ -65,11 +65,11 @@ public class MyHttpHandler implements HttpHandler, ColorPrintable {
 
         htmlBuilder.
                 append("<h1>").
-                append("Request body").
-                append("</h1>").
-                append("<iframe><p>").
-                append(requestParamValue).
-                append("</p></iframe>");
+                append("I ya love Nazar :3").
+                append("</h1>");
+//                append("<iframe><p>").
+//                append(requestParamValue).
+//                append("</p></iframe>");
 
         httpExchange.sendResponseHeaders(200, htmlBuilder.toString().length());
 

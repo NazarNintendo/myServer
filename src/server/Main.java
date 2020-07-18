@@ -14,7 +14,7 @@ public class Main {
 
     public static void main(String[] args) {
         try {
-            server = HttpServer.create(new InetSocketAddress( "192.168.0.102", 8000), 0);
+            server = HttpServer.create(new InetSocketAddress( "192.168.23.228", 8000), 0);
         }
         catch(Exception e) {
             e.printStackTrace();
