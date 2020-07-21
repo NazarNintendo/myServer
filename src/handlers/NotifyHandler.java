@@ -50,8 +50,8 @@ public class NotifyHandler implements HttpHandler, ColorPrintable, Logger {
 
 
     private void initiateFileWriting() throws IOException{
-            fileWriter = new FileWriter(new File("resources/logs"), true);
-            bufferedReader = new BufferedReader(new FileReader(new File("resources/logs")));
+            fileWriter = new FileWriter(new File("resources/logs.txt"), true);
+            bufferedReader = new BufferedReader(new FileReader(new File("resources/logs.txt")));
     }
 
 
