@@ -5,7 +5,6 @@ import com.sun.net.httpserver.HttpHandler;
 import models.LoggedEntity;
 import models.Request;
 import models.requestModels.NotificationRequest;
-import sun.rmi.runtime.Log;
 import utils.ColorPrintable;
 import utils.Logger;
 
@@ -51,7 +50,7 @@ public class NotifyHandler implements HttpHandler, ColorPrintable, Logger {
 
 
     private void initiateFileWriting() throws IOException{
-            fileWriter = new FileWriter(new File("resources/logs"), false);
+            fileWriter = new FileWriter(new File("resources/logs"), true);
             bufferedReader = new BufferedReader(new FileReader(new File("resources/logs")));
     }
 

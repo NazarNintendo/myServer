@@ -18,10 +18,10 @@ public abstract class Request implements ColorPrintable {
         StringBuilder result = new StringBuilder();
 
         for (Map.Entry header : headers.entrySet())
-            result.append(ANSI_RESET + "[Header] ").
-                    append(ANSI_GREEN + header.getKey()).
+            result.append("[Header] ").
+                    append(header.getKey()).
                     append(" -> ").
-                    append(ANSI_PURPLE + header.getValue()).
+                    append(header.getValue()).
                     append("\n");
 
         Scanner scanner = new Scanner(requestBody).useDelimiter("\n");

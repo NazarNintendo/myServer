@@ -1,6 +1,6 @@
 package models;
 
-import com.sun.javafx.binding.StringFormatter;
+
 import com.sun.net.httpserver.Headers;
 import utils.ColorPrintable;
 
@@ -19,7 +19,7 @@ public class LoggedEntity implements ColorPrintable {
     @Override
     public String toString() {
         SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
-        return ANSI_CYAN + "----------------[Time] " + formatter.format(timeStamp) + "----------------\n" + ANSI_RESET +
+        return "----------------[Time] " + formatter.format(timeStamp) + "----------------\n" +
                 request.toString();
     }
 
