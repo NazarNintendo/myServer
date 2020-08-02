@@ -2,6 +2,7 @@ package handlers;
 
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
+import com.sun.tools.internal.ws.processor.generator.CustomExceptionGenerator;
 import models.LoggedEntity;
 import models.Request;
 import models.requestModels.NotificationRequest;
@@ -13,10 +14,14 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-public class NotifyHandler implements HttpHandler, ColorPrintable, Logger {
+public class NotifyHandler extends AbstractHandler implements HttpHandler, ColorPrintable, Logger {
 
     private FileWriter fileWriter;
     private BufferedReader bufferedReader;
+
+    public NotifyHandler(boolean useArtifactLogging) {
+        super(useArtifactLogging);
+    }
 
 
     private List<LoggedEntity> fileParser() throws IOException {
@@ -50,8 +55,9 @@ public class NotifyHandler implements HttpHandler, ColorPrintable, Logger {
 
 
     private void initiateFileWriting() throws IOException{
-            fileWriter = new FileWriter(new File("resources/logs.txt"), true);
-            bufferedReader = new BufferedReader(new FileReader(new File("resources/logs.txt")));
+        String path = useArtifactLogging ? "../../../resources/logs" : "resources/logs";
+            fileWriter = new FileWriter(new File(path), true);
+            bufferedReader = new BufferedReader(new FileReader(new File(path)));
     }
 
 
@@ -92,9 +98,7 @@ public class NotifyHandler implements HttpHandler, ColorPrintable, Logger {
         LoggedEntity entity = new LoggedEntity(new Date().getTime(), postRequest);
 
         deposit(entity);
-
-        System.out.println("NOTiFY HANDLER");
-
+        
         return entity.toString();
     }
 
