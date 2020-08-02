@@ -2,7 +2,6 @@ package handlers;
 
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
-import com.sun.tools.internal.ws.processor.generator.CustomExceptionGenerator;
 import models.LoggedEntity;
 import models.Request;
 import models.requestModels.NotificationRequest;
