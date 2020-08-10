@@ -1,6 +1,5 @@
 package models;
 
-
 import com.sun.net.httpserver.Headers;
 import utils.ColorPrintable;
 
@@ -27,15 +26,11 @@ public abstract class Request implements ColorPrintable {
                     append(header.getValue()).
                     append("\n");
 
-//        Scanner scanner = new Scanner(requestBody).useDelimiter("\\");
-//        while (scanner.hasNext())
-//            result.append(scanner.hasNext());
-//        scanner.close();
 
         String requestString = new BufferedReader(new InputStreamReader(requestBody)).lines()
                 .parallel().collect(Collectors.joining("\n"));
 
-        return result.append(requestString).toString();
+        return result.append(requestString).toString() + "\n";
     }
 
     @Override

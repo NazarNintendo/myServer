@@ -2,9 +2,11 @@ package handlers;
 
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
+
 import models.LoggedEntity;
 import models.Request;
 import models.requestModels.NotificationRequest;
+
 import utils.ColorPrintable;
 import utils.Logger;
 
@@ -13,38 +15,14 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-public class NotifyHandler extends AbstractHandler implements HttpHandler, ColorPrintable, Logger {
+public class NotifyHandler extends AbstractHandler implements ColorPrintable, Logger {
 
     private FileWriter fileWriter;
-    private BufferedReader bufferedReader;
 
     public NotifyHandler(boolean useArtifactLogging) {
         super(useArtifactLogging);
     }
 
-
-    private List<LoggedEntity> fileParser() throws IOException {
-        List<String> listOfStrings = new ArrayList<>();
-
-        String str;
-        while ((str = bufferedReader.readLine()) != null)
-            listOfStrings.add(str);
-        return null;
-    }
-
-    private static String cleanTextContent(String text)
-    {
-        // strips off all non-ASCII characters
-        text = text.replaceAll("[^\\x00-\\x7F]", "");
-
-        // erases all the ASCII control characters
-        text = text.replaceAll("[\\p{Cntrl}&&[^\r\n\t]]", "");
-
-        // removes non-printable characters from Unicode
-        text = text.replaceAll("\\p{C}", "");
-
-        return text.trim();
-    }
 
     private void fileStringifier(LoggedEntity loggedEntity) throws IOException{
         fileWriter.append(loggedEntity.toString());
@@ -53,16 +31,13 @@ public class NotifyHandler extends AbstractHandler implements HttpHandler, Color
 
 
 
-    private void initiateFileWriting() throws IOException{
-        String path = useArtifactLogging ? "../../../resources/logs" : "resources/logs";
-            fileWriter = new FileWriter(new File(path), true);
-            bufferedReader = new BufferedReader(new FileReader(new File(path)));
+    private void initiateFileWriting() throws IOException {
+        fileWriter = new FileWriter(new File(logsPath), true);
     }
 
 
     @Override
     public void handle(HttpExchange httpExchange) throws IOException {
-
 
         Object response;
 
@@ -90,7 +65,7 @@ public class NotifyHandler extends AbstractHandler implements HttpHandler, Color
         sendResponse(httpExchange, response);
     }
 
-    private String handlePost(HttpExchange httpExchange) {
+    public String handlePost(HttpExchange httpExchange) {
         Request postRequest = new NotificationRequest(httpExchange.getRequestHeaders(),
                                                         httpExchange.getRequestBody());
 
@@ -101,7 +76,7 @@ public class NotifyHandler extends AbstractHandler implements HttpHandler, Color
         return entity.toString();
     }
 
-    private String handleGet(HttpExchange httpExchange) {
+    public String handleGet(HttpExchange httpExchange) {
         try {
             initiateFileWriting();
         }
@@ -114,9 +89,6 @@ public class NotifyHandler extends AbstractHandler implements HttpHandler, Color
 
         LoggedEntity entity = new LoggedEntity(new Date().getTime(), postRequest);
 
-        deposit(entity);
-
-        System.out.println(entity.toString());
 
         try {
             fileStringifier(entity);
@@ -124,14 +96,17 @@ public class NotifyHandler extends AbstractHandler implements HttpHandler, Color
         catch(Exception e) {
             e.printStackTrace();
         }
-        return entity.toString();
+
+        System.out.println(entity.toString());
+
+        return "SUCCESS";
     }
 
-    private String handleDelete(HttpExchange httpExchange) {
+    public String handleDelete(HttpExchange httpExchange) {
         return "Not yet implemented";
     }
 
-    private String handleUpdate(HttpExchange httpExchange) {
+    public String handleUpdate(HttpExchange httpExchange) {
         return "Not yet implemented";
     }
 
@@ -146,7 +121,7 @@ public class NotifyHandler extends AbstractHandler implements HttpHandler, Color
         return logs.get(ind);
     }
 
-    public void sendResponse(HttpExchange httpExchange, Object parameters) throws  IOException{
+    public void sendResponse(HttpExchange httpExchange, Object parameters) throws IOException{
         OutputStream response = httpExchange.getResponseBody();
         StringBuilder responseBody = new StringBuilder();
         responseBody.append("<h1>").append("NotifyHandler").append("</h1>").

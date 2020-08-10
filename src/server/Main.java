@@ -3,6 +3,7 @@ package server;
 import com.sun.net.httpserver.*;
 import handlers.MyHttpHandler;
 import handlers.NotifyHandler;
+import handlers.ShowHandler;
 
 import java.net.InetSocketAddress;
 import java.util.Arrays;
@@ -36,7 +37,6 @@ public class Main {
 
         boolean useArtifactLoggingPath = (args.length != 0) ? !args[0].equals("fromIDE") : true;
 
-        System.out.println("flag = " + useArtifactLoggingPath);
 
         try {
             server = HttpServer.create(new InetSocketAddress(getCorrectIP(),8000), 0);
@@ -46,6 +46,7 @@ public class Main {
         }
         //server.createContext("/", new MyHttpHandler());
         server.createContext("/notify", new NotifyHandler(useArtifactLoggingPath));
+        server.createContext("/show", new ShowHandler(useArtifactLoggingPath));
         server.setExecutor(threadPoolExecutor);
         server.start();
         System.out.println("InetSocketAddress = " + server.getAddress());
