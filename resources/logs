@@ -1,0 +1,21 @@
+###########################################################################
+----------------[Time] 11-08-2020 18:10:51 ----------------
+[Header] Accept-encoding -> [gzip, deflate, br]
+[Header] Accept -> [*/*]
+[Header] Connection -> [keep-alive]
+[Header] Host -> [192.168.1.134:8000]
+[Header] User-agent -> [PostmanRuntime/7.26.2]
+[Header] Content-type -> [application/json]
+[Header] Postman-token -> [5f94ee65-7906-47f6-a300-c1558f522077]
+[Header] Content-length -> [116]
+{
+    "data":
+    [
+        {
+            "status": 1
+        },
+        {
+            "status": 0
+        }
+    ]
+}
