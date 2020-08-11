@@ -8,10 +8,8 @@ import java.io.IOException;
 public abstract class AbstractHandler implements HttpHandler {
     protected String logsPath;
 
-    public AbstractHandler() {};
-
     public AbstractHandler(boolean useArtifactLogging) {
-        this.logsPath = useArtifactLogging ? "resources/logs" : "../../../resources/logs";
+        this.logsPath = useArtifactLogging ? "../../../resources/logs" : "resources/logs";
     }
 
     @Override

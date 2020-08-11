@@ -1,40 +1,24 @@
 package handlers;
 
 import com.sun.net.httpserver.HttpExchange;
-import com.sun.net.httpserver.HttpHandler;
 
 import models.LoggedEntity;
-import models.Request;
-import models.requestModels.NotificationRequest;
+import models.requestModels.RequestObj;
 
 import utils.ColorPrintable;
-import utils.Logger;
+import utils.FileHelper;
 
 import java.io.*;
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 
-public class NotifyHandler extends AbstractHandler implements ColorPrintable, Logger {
+public class NotifyHandler extends AbstractHandler implements ColorPrintable {
 
-    private FileWriter fileWriter;
+    private final FileHelper fileHelper = new FileHelper(logsPath);
 
     public NotifyHandler(boolean useArtifactLogging) {
         super(useArtifactLogging);
+        fileHelper.clear();
     }
-
-
-    private void fileStringifier(LoggedEntity loggedEntity) throws IOException{
-        fileWriter.append(loggedEntity.toString());
-        fileWriter.close();
-    }
-
-
-
-    private void initiateFileWriting() throws IOException {
-        fileWriter = new FileWriter(new File(logsPath), true);
-    }
-
 
     @Override
     public void handle(HttpExchange httpExchange) throws IOException {
@@ -65,41 +49,19 @@ public class NotifyHandler extends AbstractHandler implements ColorPrintable, Lo
         sendResponse(httpExchange, response);
     }
 
-    public String handlePost(HttpExchange httpExchange) {
-        Request postRequest = new NotificationRequest(httpExchange.getRequestHeaders(),
-                                                        httpExchange.getRequestBody());
+    public String handlePost(HttpExchange exchange) {
+        RequestObj postRequest = new RequestObj(exchange);
+        long timeStamp = new Date().getTime();
 
-        LoggedEntity entity = new LoggedEntity(new Date().getTime(), postRequest);
+        LoggedEntity entity = new LoggedEntity(timeStamp, postRequest);
 
-        deposit(entity);
-        
+        fileHelper.putToFile(entity);
+
         return entity.toString();
     }
 
-    public String handleGet(HttpExchange httpExchange) {
-        try {
-            initiateFileWriting();
-        }
-        catch(Exception e) {
-            e.printStackTrace();
-        }
-
-        Request postRequest = new NotificationRequest(httpExchange.getRequestHeaders(),
-                httpExchange.getRequestBody());
-
-        LoggedEntity entity = new LoggedEntity(new Date().getTime(), postRequest);
-
-
-        try {
-            fileStringifier(entity);
-        }
-        catch(Exception e) {
-            e.printStackTrace();
-        }
-
-        System.out.println(entity.toString());
-
-        return "SUCCESS";
+    public String handleGet(HttpExchange exchange) {
+        return "Not yet implemented";
     }
 
     public String handleDelete(HttpExchange httpExchange) {
@@ -110,27 +72,19 @@ public class NotifyHandler extends AbstractHandler implements ColorPrintable, Lo
         return "Not yet implemented";
     }
 
-    @Override
-    public void deposit(Object obj) {
-        LoggedEntity log = (LoggedEntity) obj;
-        logs.add(log);
-    }
-
-    @Override
-    public Object retrieve(int ind) {
-        return logs.get(ind);
-    }
-
-    public void sendResponse(HttpExchange httpExchange, Object parameters) throws IOException{
-        OutputStream response = httpExchange.getResponseBody();
+    public void sendResponse(HttpExchange httpExchange, Object obj) throws IOException{
         StringBuilder responseBody = new StringBuilder();
         responseBody.append("<h1>").append("NotifyHandler").append("</h1>").
-                append("<p>").append(parameters.toString()).append("</p>");
+                append("<p>").append(obj).append("</p>");
 
         httpExchange.sendResponseHeaders(200, responseBody.toString().length());
+
+        OutputStream response = httpExchange.getResponseBody();
         response.write(responseBody.toString().getBytes());
         response.flush();
         response.close();
+
+
     }
 
 }

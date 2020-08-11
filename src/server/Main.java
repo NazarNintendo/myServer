@@ -1,64 +1,39 @@
 package server;
 
 import com.sun.net.httpserver.*;
-import handlers.MyHttpHandler;
 import handlers.NotifyHandler;
 import handlers.ShowHandler;
 
+import utils.ColorPrintable;
+import utils.ConfigClass;
+
 import java.net.InetSocketAddress;
-import java.util.Arrays;
-import java.util.Scanner;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadPoolExecutor;
 
-public class Main {
+public class Main implements ColorPrintable {
     private static HttpServer server;
     private static ThreadPoolExecutor threadPoolExecutor = (ThreadPoolExecutor) Executors.newFixedThreadPool(10);
 
-    private static final String linuxIP = "192.168.23.228";
-    private static final String windowsIP = "192.168.0.102";
-    private static final String macIP = "192.168.201.186";
-
-
-    private static String getCorrectIP() {
-        String os = System.getProperty("os.name");
-        if (os.contains("Mac"))
-            return macIP;
-        if (os.contains("Linux"))
-            return linuxIP;
-        if (os.contains("Windows"))
-            return windowsIP;
-        return "localhost";
-    }
-
     public static void main(String[] args) {
-        System.out.println("args = " + Arrays.toString(args));
-        System.out.println("OS.name = " + System.getProperty("os.name"));
-
-        boolean useArtifactLoggingPath = (args.length != 0) ? !args[0].equals("fromIDE") : true;
-
-
         try {
-            server = HttpServer.create(new InetSocketAddress(getCorrectIP(),8000), 0);
+            server = HttpServer.create(new InetSocketAddress(ConfigClass.getCorrectIP(),8000), 0);
         }
         catch(Exception e) {
             e.printStackTrace();
+            return;
         }
-        //server.createContext("/", new MyHttpHandler());
+
+        boolean useArtifactLoggingPath = (args.length != 0) ? !args[0].equals("fromIDE") : true;
+
         server.createContext("/notify", new NotifyHandler(useArtifactLoggingPath));
         server.createContext("/show", new ShowHandler(useArtifactLoggingPath));
         server.setExecutor(threadPoolExecutor);
         server.start();
-        System.out.println("InetSocketAddress = " + server.getAddress());
-        System.out.println("HostName = " + server.getAddress().getHostName());
 
-        Scanner sc = new Scanner(System.in);
-        String part;
-        while (sc.hasNextLine()) {
-            part = sc.nextLine();
-            System.out.println("{\"" + part + "\"},");
-        }
-
+        System.out.println(GREEN_BOLD + "Server started successfully");
+        System.out.println(CYAN_BOLD + "InetSocketAddress = " + RESET + server.getAddress());
+        System.out.println(CYAN_BOLD + "HostName = " + RESET + server.getAddress().getHostName() + RESET);
     }
 
 }

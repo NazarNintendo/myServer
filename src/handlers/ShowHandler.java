@@ -1,7 +1,6 @@
 package handlers;
 
 import com.sun.net.httpserver.HttpExchange;
-import models.LoggedEntity;
 import utils.Logger;
 
 import java.io.*;
@@ -12,22 +11,12 @@ public class ShowHandler extends AbstractHandler implements Logger{
         super(useArtifactLogging);
     }
 
+
+
     @Override
     public String handleGet(HttpExchange exchange) {
-        try {
-            BufferedReader bf = new BufferedReader(new FileReader(new File(logsPath)));
-            StringBuilder result = new StringBuilder();
-            String str = "";
-            while((str = bf.readLine()) != null)
-                result.append(str);
-            return gitresult.toString();
-        }
-        catch(Exception e) {
-            e.printStackTrace();
-        }
-        return "FAIL";
+        return "Not yet implemented";
     }
-
 
     @Override
     public String handleDelete(HttpExchange exchange) {

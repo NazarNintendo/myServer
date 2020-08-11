@@ -1,36 +1,40 @@
-package models;
+package models.requestModels;
 
 import com.sun.net.httpserver.Headers;
+import com.sun.net.httpserver.HttpExchange;
 import utils.ColorPrintable;
 
 import java.io.BufferedReader;
-import java.io.InputStream;
 import java.io.InputStreamReader;
+
+
+import java.util.List;
 import java.util.Map;
-import java.util.Scanner;
 import java.util.stream.Collectors;
 
-public abstract class Request implements ColorPrintable {
+public class RequestObj implements ColorPrintable {
     protected Headers headers;
-    protected InputStream requestBody;
+    protected String requestBody;
 
+    public RequestObj(HttpExchange exchange) {
+        headers = exchange.getRequestHeaders();
+        requestBody = new BufferedReader(new InputStreamReader(exchange.getRequestBody())).lines().collect(Collectors.joining("\n"));
+    }
 
     @Override
     public String toString() {
         StringBuilder result = new StringBuilder();
 
-        for (Map.Entry header : headers.entrySet())
+        for (Map.Entry<String, List<String>> header : headers.entrySet())
             result.append("[Header] ").
                     append(header.getKey()).
                     append(" -> ").
                     append(header.getValue()).
                     append("\n");
 
+        result.append(requestBody).append("\n");
 
-        String requestString = new BufferedReader(new InputStreamReader(requestBody)).lines()
-                .parallel().collect(Collectors.joining("\n"));
-
-        return result.append(requestString).toString() + "\n";
+        return result.toString();
     }
 
     @Override
@@ -40,7 +44,7 @@ public abstract class Request implements ColorPrintable {
         if (o == null || o.getClass() != getClass())
             return false;
 
-        Request obj = (Request) o;
+        RequestObj obj = (RequestObj) o;
 
         if (!this.headers.equals(obj.headers))
             return false;
@@ -52,6 +56,9 @@ public abstract class Request implements ColorPrintable {
 
     @Override
     public  int hashCode() {
-        return 0;
+        int prime = 31;
+        int result = (headers != null) ? headers.hashCode() : 0;
+        result = result * prime + (requestBody != null ? requestBody.hashCode() : 0);
+        return result;
     }
 }
